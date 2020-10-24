@@ -7,6 +7,7 @@
     "serve": "npm run mdi-gen && vue-cli-service serve",
     "dev": "npm run serve",
     "build": "npm run mdi-gen && vue-cli-service build",
+    "deploy": "npm run build && firebase deploy",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
