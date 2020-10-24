@@ -25,23 +25,23 @@
             <v-virtual-scroll bench="10"
                               :items="rows"
                               :item-height="80"
-                              :height="height"
-            >
+                              :height="height">
                 <template v-slot:default="{ item }">
                     <v-container>
                         <v-row>
                             <v-col v-for="icon in item" :key="icon.n"
-                                   class="text-center"
-                            >
+                                   class="text-center">
                                 <v-btn large icon
                                        color="primary"
-                                       :title="icon.n">
+                                       :title="icon.n"
+                                       @click="onClick(icon.n)">
                                     <v-avatar tile size="30">
                                         <v-img :src="`mdi/${icon.n}.svg`"
                                                :alt="icon.n" />
                                     </v-avatar>
                                 </v-btn>
                                 <div style="font-size: 8px"
+                                     :id="icon.n"
                                      :title="icon.n">
                                     {{ icon.n }}
                                 </div>
@@ -54,6 +54,7 @@
     </v-app>
 </template>
 
+<!--suppress JSMethodCanBeStatic -->
 <script lang="ts">
 
 import chunk from "lodash/chunk";
@@ -70,6 +71,15 @@ const fuse = new Fuse(MDI_META, {
     shouldSort: true,
     keys: ["n", "a", "t"],
 });
+
+function copyTextToClipboard(text: string) {
+    const element = document.createElement("input");
+    document.getElementsByTagName("body")[0].append(element);
+    element.value = text;
+    element.select();
+    document.execCommand("copy");
+    element.remove();
+}
 
 @Component
 export default class App extends Vue {
@@ -92,6 +102,10 @@ export default class App extends Vue {
 
     private onResize() {
         this.height = window.innerHeight - 64;
+    }
+
+    private onClick(name: string) {
+        copyTextToClipboard(`mdi-${name}`);
     }
 }
 
