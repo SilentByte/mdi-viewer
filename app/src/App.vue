@@ -64,10 +64,9 @@ import {
     Vue,
 } from "vue-property-decorator";
 
-import * as MDI_META from "@/mdi-meta.gen.json";
+import MDI_META from "@/mdi-meta.gen.json";
 
-const ICONS = MDI_META.slice();
-const fuse = new Fuse(ICONS, {
+const fuse = new Fuse(MDI_META, {
     shouldSort: true,
     keys: ["n", "a", "t"],
 });
@@ -80,7 +79,7 @@ export default class App extends Vue {
 
     private get filteredIcons() {
         if(!this.search) {
-            return ICONS;
+            return MDI_META;
         }
 
         return fuse.search(this.search, {limit: 80}).map(r => r.item);
