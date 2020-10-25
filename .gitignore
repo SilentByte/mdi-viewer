@@ -10,4 +10,4 @@ node_modules
 .firebase
 
 public/mdi
-src/mdi-meta.gen.json
+src/mdi.gen.json

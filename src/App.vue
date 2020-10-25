@@ -36,8 +36,9 @@
                                        :title="icon.n"
                                        @click="onClick(icon.n)">
                                     <v-avatar tile size="30">
-                                        <v-img :src="`mdi/${icon.n}.svg`"
-                                               :alt="icon.n" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+                                            <path :d="icon.p" />
+                                        </svg>
                                     </v-avatar>
                                 </v-btn>
                                 <div style="font-size: 8px"
@@ -65,7 +66,7 @@ import {
     Vue,
 } from "vue-property-decorator";
 
-import MDI_META from "@/mdi-meta.gen.json";
+import MDI_META from "@/mdi.gen.json";
 
 const fuse = new Fuse(MDI_META, {
     shouldSort: true,
@@ -96,7 +97,11 @@ export default class App extends Vue {
     }
 
     private get rows() {
-        const size = this.$vuetify.breakpoint.smAndDown ? 4 : 8;
+        const bp = this.$vuetify.breakpoint;
+        const size = bp.xsOnly ? 3
+            : bp.smAndDown ? 4
+                : 8;
+
         return chunk(this.filteredIcons, size);
     }
 

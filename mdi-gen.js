@@ -7,22 +7,31 @@
 const fs = require("fs");
 const path = require("path");
 const glob = require("glob");
+const xml2js = require("xml2js");
+const svgo = require("svgo");
 
-const meta = JSON
-    .parse(fs.readFileSync("./node_modules/@mdi/svg/meta.json", "utf-8"))
-    .map(m => ({
-        n: m.name,
-        c: m.codepoint,
-        a: m.aliases,
-        t: m.tags,
-    }));
+const optimizer = new svgo();
 
-fs.writeFileSync("./src/mdi-meta.gen.json", JSON.stringify(meta), "utf-8");
-
-if(!fs.existsSync("./public/mdi")) {
-    fs.mkdirSync("./public/mdi");
+async function extractSvgPath(svg) {
+    svg = await optimizer.optimize(svg);
+    return (await xml2js.parseStringPromise(svg.data)).svg.path[0].$.d;
 }
 
-glob.sync("./node_modules/@mdi/svg/svg/*.svg").forEach(filename => {
-    fs.copyFileSync(filename, `./public/mdi/${path.basename(filename)}`);
-});
+async function generate() {
+    const data = JSON
+        .parse(fs.readFileSync("./node_modules/@mdi/svg/meta.json", "utf-8"))
+        .map(m => ({
+            n: m.name,
+            a: m.aliases,
+            t: m.tags,
+        }));
+
+    for(const d of data) {
+        console.log(d.n);
+        d.p = await extractSvgPath(fs.readFileSync(`./node_modules/@mdi/svg/svg/${d.n}.svg`, "utf-8"));
+    }
+
+    fs.writeFileSync("./src/mdi.gen.json", JSON.stringify(data), "utf-8");
+}
+
+generate().then(() => console.log("DONE"));
