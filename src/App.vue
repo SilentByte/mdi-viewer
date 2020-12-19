@@ -38,7 +38,8 @@
             </v-text-field>
         </v-app-bar>
         <v-main v-resize="onResize">
-            <v-virtual-scroll bench="10"
+            <v-virtual-scroll v-if="filteredIcons.length > 0"
+                              bench="10"
                               :items="rows"
                               :item-height="80"
                               :height="height">
@@ -67,6 +68,19 @@
                     </v-container>
                 </template>
             </v-virtual-scroll>
+            <v-container v-else fill-height>
+                <v-row dense class="text-center">
+                    <v-col cols="12">
+                        <v-icon size="200"
+                                color="#ddd">
+                            mdi-emoticon-sad-outline
+                        </v-icon>
+                    </v-col>
+                    <v-col cols="12" style="color: #bbb">
+                        Oh no! There are no icons that match your search&hellip;
+                    </v-col>
+                </v-row>
+            </v-container>
         </v-main>
     </v-app>
 </template>
