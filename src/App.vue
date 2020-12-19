@@ -82,6 +82,25 @@
                 </v-row>
             </v-container>
         </v-main>
+
+        <v-footer app
+                  color="primary"
+                  class="justify-center white--text">
+            <v-btn x-small dark rounded text
+                   class="mx-2"
+                   href="https://github.com/SilentByte/mdi-viewer"
+                   target="_blank">
+                <v-icon left small>mdi-github</v-icon>
+                SilentByte
+            </v-btn>
+            <v-btn x-small dark rounded text
+                   class="mx-2"
+                   href="https://twitter.com/RicoBeti"
+                   target="_blank">
+                <v-icon left small>mdi-twitter</v-icon>
+                RicoBeti
+            </v-btn>
+        </v-footer>
     </v-app>
 </template>
 
@@ -145,7 +164,7 @@ export default class App extends Vue {
     }
 
     private onResize() {
-        this.height = window.innerHeight - 64;
+        this.height = window.innerHeight - 96;
     }
 
     private onSearch(text: string | null) {
