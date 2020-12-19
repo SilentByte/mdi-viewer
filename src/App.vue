@@ -14,12 +14,28 @@
                 <span class="font-weight-bold">MDI</span><span class="font-weight-light">Viewer</span>
             </v-toolbar-title>
 
-            <v-text-field light solo hide-details
-                          autofocus clearable
+            <v-text-field ref="search"
+                          light solo autofocus hide-details
                           prepend-inner-icon="mdi-magnify"
                           placeholder="Search…"
                           @input="onSearch"
-                          @keydown.esc.stop="search = null" />
+                          @keydown.esc.stop="$refs.search.reset()">
+                <template v-slot:append>
+                    <v-layout class="align-center">
+                        <v-chip small outlined disabled>
+                            {{ search ? `${filteredIcons.length} / ${icons.length}` : icons.length }}
+                        </v-chip>
+                        <v-fade-transition>
+                            <v-btn v-if="search"
+                                   small icon
+                                   class="ms-2"
+                                   @click="$refs.search.reset()">
+                                <v-icon>mdi-close</v-icon>
+                            </v-btn>
+                        </v-fade-transition>
+                    </v-layout>
+                </template>
+            </v-text-field>
         </v-app-bar>
         <v-main v-resize="onResize">
             <v-virtual-scroll bench="10"
@@ -71,6 +87,7 @@ import {
 import MDI_META from "@/mdi.gen.json";
 
 const fuse = new Fuse(MDI_META, {
+    threshold: 0.2,
     shouldSort: true,
     keys: ["n", "a", "t"],
 });
@@ -91,13 +108,17 @@ export default class App extends Vue {
 
     private height = 300;
 
+    private get icons() {
+        return MDI_META;
+    }
+
     private get filteredIcons() {
         if(!this.search) {
             return MDI_META;
         }
 
         const search = this.search.substr(0, 20);
-        return fuse.search(search, {limit: 80}).map(r => r.item);
+        return fuse.search(search, {limit: 120}).map(r => r.item);
     }
 
     private get rows() {
