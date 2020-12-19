@@ -5,8 +5,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 const fs = require("fs");
-const path = require("path");
-const glob = require("glob");
 const xml2js = require("xml2js");
 const svgo = require("svgo");
 
@@ -26,8 +24,8 @@ async function generate() {
             t: m.tags,
         }));
 
-    for(const d of data) {
-        console.log(d.n);
+    for(const [i, d] of data.entries()) {
+        console.log(`[${i + 1}/${data.length}] mdi-${d.n}`);
         d.p = await extractSvgPath(fs.readFileSync(`./node_modules/@mdi/svg/svg/${d.n}.svg`, "utf-8"));
     }
 
