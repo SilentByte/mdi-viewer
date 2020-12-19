@@ -18,7 +18,7 @@
                           autofocus clearable
                           prepend-inner-icon="mdi-magnify"
                           placeholder="Search…"
-                          v-model="search"
+                          @input="onSearch"
                           @keydown.esc.stop="search = null" />
         </v-app-bar>
         <v-main v-resize="onResize">
@@ -35,7 +35,7 @@
                                        color="primary"
                                        :title="icon.n"
                                        @click="onClick(icon.n)">
-                                    <v-avatar tile size="30">
+                                    <v-avatar tile size="24">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
                                             <path :d="icon.p" />
                                         </svg>
@@ -55,10 +55,12 @@
     </v-app>
 </template>
 
-<!--suppress JSMethodCanBeStatic -->
+<!--suppress JSMethodCanBeStatic, JSUnusedGlobalSymbols -->
 <script lang="ts">
 
+import debounce from "lodash/debounce";
 import chunk from "lodash/chunk";
+
 import Fuse from "fuse.js";
 
 import {
@@ -84,7 +86,8 @@ function copyTextToClipboard(text: string) {
 
 @Component
 export default class App extends Vue {
-    private search: string | null = null;
+    private search = "";
+    private debouncedSearch!: (text: string) => void;
 
     private height = 300;
 
@@ -93,7 +96,8 @@ export default class App extends Vue {
             return MDI_META;
         }
 
-        return fuse.search(this.search, {limit: 80}).map(r => r.item);
+        const search = this.search.substr(0, 20);
+        return fuse.search(search, {limit: 80}).map(r => r.item);
     }
 
     private get rows() {
@@ -109,8 +113,16 @@ export default class App extends Vue {
         this.height = window.innerHeight - 64;
     }
 
+    private onSearch(text: string | null) {
+        this.debouncedSearch(text || "");
+    }
+
     private onClick(name: string) {
         copyTextToClipboard(`mdi-${name}`);
+    }
+
+    mounted(): void {
+        this.debouncedSearch = debounce((text: string) => this.search = text, 200);
     }
 }
 
