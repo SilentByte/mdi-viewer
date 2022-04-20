@@ -11,8 +11,8 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@mdi/font": "^5.9.55",
-    "@mdi/svg": "^5.9.55",
+    "@mdi/font": "^6.6.96",
+    "@mdi/svg": "^6.6.96",
     "core-js": "^3.22.1",
     "fuse.js": "^6.5.3",
     "lodash": "^4.17.21",
